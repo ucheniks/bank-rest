@@ -11,5 +11,5 @@ public interface UserService {
     UserResponseDto getUserById(Long userId);
     List<UserResponseDto> getAllUsers();
     void deleteUser(Long userId);
-    User getCurrentUser(); // для security
+    User getCurrentUser();
 }

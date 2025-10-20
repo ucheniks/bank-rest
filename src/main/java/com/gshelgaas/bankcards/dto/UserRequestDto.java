@@ -12,16 +12,16 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserRequestDto {
-    @NotBlank
+    @NotBlank(message = "First name cannot be blank")
     private String firstName;
 
-    @NotBlank
+    @NotBlank(message = "Last name cannot be blank")
     private String lastName;
 
-    @Email
-    @NotBlank
+    @Email(message = "Email should be valid")
+    @NotBlank(message = "Email cannot be blank")
     private String email;
 
-    @NotBlank
+    @NotBlank(message = "Password cannot be blank")
     private String password;
 }

@@ -21,6 +21,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -47,6 +48,10 @@ public class CardServiceImpl implements CardService {
             throw new ConflictException("Card with this number already exists");
         }
 
+        if (cardRequestDto.getExpiryDate().isBefore(LocalDate.now())) {
+            throw new ConflictException("Cannot create card with expired date");
+        }
+
         Card card = Card.builder()
                 .cardNumber(encryptionUtil.encrypt(cardRequestDto.getCardNumber()))
                 .cardHolder(cardRequestDto.getCardHolder())
@@ -54,7 +59,7 @@ public class CardServiceImpl implements CardService {
                 .status(Card.CardStatus.ACTIVE)
                 .balance(cardRequestDto.getBalance())
                 .user(user)
-                .createdAt(LocalDate.now())
+                .createdAt(LocalDateTime.now())
                 .build();
 
         Card savedCard = cardRepository.save(card);
@@ -68,18 +73,42 @@ public class CardServiceImpl implements CardService {
         log.info("Getting card by id: {}", cardId);
         Card card = cardRepository.findById(cardId)
                 .orElseThrow(() -> new NotFoundException("Card not found with id: " + cardId));
-        return mapToResponseDto(card);
+        return mapToResponseDtoWithActualStatus(card);
     }
 
     @Override
-    public Page<CardResponseDto> getUserCards(Long userId, Pageable pageable) {
-        log.info("Getting cards for user: {}", userId);
+    public Page<CardResponseDto> getUserCards(Long userId, String status, Pageable pageable) {
+        log.info("Getting cards for user: {} with status filter: {}", userId, status);
+
         if (!userRepository.existsById(userId)) {
             throw new NotFoundException("User not found with id: " + userId);
         }
 
-        return cardRepository.findByUserId(userId, pageable)
-                .map(this::mapToResponseDto);
+        Card.CardStatus statusEnum = null;
+        if (status != null && !status.trim().isEmpty()) {
+            try {
+                statusEnum = Card.CardStatus.valueOf(status.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                throw new IllegalArgumentException("Invalid card status: " + status);
+            }
+        }
+
+        return cardRepository.findByUserIdWithFilters(userId, statusEnum, pageable)
+                .map(this::mapToResponseDtoWithActualStatus);
+    }
+
+    @Override
+    public BigDecimal getCardBalance(Long cardId, Long userId) {
+        log.info("Getting balance for card: {}, user: {}", cardId, userId);
+
+        Card card = cardRepository.findById(cardId)
+                .orElseThrow(() -> new NotFoundException("Card not found"));
+
+        if (!card.getUser().getId().equals(userId)) {
+            throw new ForbiddenException("Card does not belong to user");
+        }
+
+        return card.getBalance();
     }
 
     @Override
@@ -88,6 +117,8 @@ public class CardServiceImpl implements CardService {
         log.info("Blocking card: {}", cardId);
         Card card = cardRepository.findById(cardId)
                 .orElseThrow(() -> new NotFoundException("Card not found with id: " + cardId));
+
+        validateCardNotExpired(card, "block");
 
         card.setStatus(Card.CardStatus.BLOCKED);
         Card updatedCard = cardRepository.save(card);
@@ -101,6 +132,8 @@ public class CardServiceImpl implements CardService {
         log.info("Activating card: {}", cardId);
         Card card = cardRepository.findById(cardId)
                 .orElseThrow(() -> new NotFoundException("Card not found with id: " + cardId));
+
+        validateCardNotExpired(card, "activate");
 
         card.setStatus(Card.CardStatus.ACTIVE);
         Card updatedCard = cardRepository.save(card);
@@ -126,6 +159,8 @@ public class CardServiceImpl implements CardService {
 
         Card card = cardRepository.findById(cardId)
                 .orElseThrow(() -> new NotFoundException("Card not found"));
+
+        validateCardNotExpired(card, "request block for");
 
         Optional<BlockRequest> existingRequest = blockRequestRepository
                 .findByCardIdAndStatus(cardId, BlockRequest.BlockStatus.PENDING);
@@ -155,6 +190,8 @@ public class CardServiceImpl implements CardService {
         Card card = cardRepository.findById(cardId)
                 .orElseThrow(() -> new NotFoundException("Card not found"));
 
+        validateCardNotExpired(card, "approve block for");
+
         BlockRequest blockRequest = blockRequestRepository
                 .findByCardIdAndStatus(cardId, BlockRequest.BlockStatus.PENDING)
                 .orElseThrow(() -> new NotFoundException("No pending block request for this card"));
@@ -169,6 +206,14 @@ public class CardServiceImpl implements CardService {
         return mapToResponseDto(card);
     }
 
+    @Override
+    @Transactional
+    public Page<CardResponseDto> getAllCards(Pageable pageable) {
+        log.info("Getting all cards with pagination");
+        return cardRepository.findAll(pageable)
+                .map(this::mapToResponseDtoWithActualStatus);
+    }
+
     private void checkCardOwnership(Long cardId, Long userId) {
         Card card = cardRepository.findById(cardId)
                 .orElseThrow(() -> new NotFoundException("Card not found"));
@@ -176,6 +221,20 @@ public class CardServiceImpl implements CardService {
         if (!card.getUser().getId().equals(userId)) {
             throw new ForbiddenException("Card does not belong to user");
         }
+    }
+
+    private CardResponseDto mapToResponseDtoWithActualStatus(Card card) {
+        Card.CardStatus actualStatus = calculateActualStatus(card);
+
+        return CardResponseDto.builder()
+                .id(card.getId())
+                .cardNumber(maskCardNumber(encryptionUtil.decrypt(card.getCardNumber())))
+                .cardHolder(card.getCardHolder())
+                .expiryDate(card.getExpiryDate())
+                .status(actualStatus.name())
+                .balance(card.getBalance())
+                .userId(card.getUser().getId())
+                .build();
     }
 
     private CardResponseDto mapToResponseDto(Card card) {
@@ -200,6 +259,14 @@ public class CardServiceImpl implements CardService {
                 .build();
     }
 
+    private Card.CardStatus calculateActualStatus(Card card) {
+        if (card.getStatus() == Card.CardStatus.ACTIVE &&
+                card.getExpiryDate().isBefore(LocalDate.now())) {
+            return Card.CardStatus.EXPIRED;
+        }
+        return card.getStatus();
+    }
+
     private String maskCardNumber(String cardNumber) {
         if (cardNumber == null || cardNumber.length() < 4) {
             return cardNumber;
@@ -211,6 +278,14 @@ public class CardServiceImpl implements CardService {
             return "**** **** **** " + cleanNumber.substring(12);
         } else {
             return "****" + cleanNumber.substring(cleanNumber.length() - 4);
+        }
+    }
+
+    private void validateCardNotExpired(Card card, String operation) {
+        Card.CardStatus actualStatus = calculateActualStatus(card);
+
+        if (actualStatus == Card.CardStatus.EXPIRED) {
+            throw new ConflictException("Cannot " + operation + " expired card");
         }
     }
 }

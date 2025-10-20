@@ -14,6 +14,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
+
 @Slf4j
 @RestController
 @RequestMapping("/user/cards")
@@ -24,21 +26,30 @@ public class UserCardController {
 
     @GetMapping
     public Page<CardResponseDto> getUserCards(
+            @RequestParam(required = false) String status,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
 
         User currentUser = userService.getCurrentUser();
-        log.info("GET /user/cards - get cards for user: {}, page: {}, size: {}",
-                currentUser.getId(), page, size);
+        log.info("GET /user/cards - get cards for user: {}, status: {}, page: {}, size: {}",
+                currentUser.getId(), status, page, size);
 
         Pageable pageable = PageRequest.of(page, size);
-        return cardService.getUserCards(currentUser.getId(), pageable);
+        return cardService.getUserCards(currentUser.getId(), status, pageable);
     }
 
     @GetMapping("/{cardId}")
     public CardResponseDto getUserCard(@PathVariable Long cardId) {
         log.info("GET /user/cards/{} - get user card by id", cardId);
         return cardService.getCardById(cardId);
+    }
+
+    @GetMapping("/{cardId}/balance")
+    public BigDecimal getCardBalance(@PathVariable Long cardId) {
+        User currentUser = userService.getCurrentUser();
+        log.info("GET /user/cards/{}/balance - get balance for user: {}", cardId, currentUser.getId());
+
+        return cardService.getCardBalance(cardId, currentUser.getId());
     }
 
     @PostMapping("/{cardId}/block-request")

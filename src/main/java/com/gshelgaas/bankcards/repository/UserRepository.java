@@ -1,4 +1,3 @@
-// UserRepository.java
 package com.gshelgaas.bankcards.repository;
 
 import com.gshelgaas.bankcards.entity.User;

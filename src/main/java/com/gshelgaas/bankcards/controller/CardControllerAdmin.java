@@ -6,6 +6,8 @@ import com.gshelgaas.bankcards.service.CardService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,6 +31,20 @@ public class CardControllerAdmin {
     public CardResponseDto getCard(@PathVariable Long cardId) {
         log.info("GET /admin/cards/{} - get card by id", cardId);
         return cardService.getCardById(cardId);
+    }
+
+    @GetMapping
+    public Page<CardResponseDto> getAllCards(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        log.info("GET /admin/cards - get all cards, page: {}, size: {}", page, size);
+        return cardService.getAllCards(PageRequest.of(page, size));
+    }
+
+    @PatchMapping("/{cardId}/approve-block")
+    public CardResponseDto approveCardBlock(@PathVariable Long cardId) {
+        log.info("PATCH /admin/cards/{}/approve-block - approve block request", cardId);
+        return cardService.approveCardBlock(cardId);
     }
 
     @PatchMapping("/{cardId}/block")

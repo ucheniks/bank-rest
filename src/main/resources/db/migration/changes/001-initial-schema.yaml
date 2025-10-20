@@ -93,6 +93,7 @@ databaseChangeLog:
                     nullable: false
                     foreignKeyName: fk_card_user
                     references: users(id)
+                    deleteAction: CASCADE  
               - column:
                   name: created_at
                   type: TIMESTAMP
@@ -120,6 +121,7 @@ databaseChangeLog:
                     nullable: false
                     foreignKeyName: fk_transfer_from_card
                     references: cards(id)
+                    deleteAction: CASCADE
               - column:
                   name: to_card_id
                   type: BIGINT
@@ -127,6 +129,7 @@ databaseChangeLog:
                     nullable: false
                     foreignKeyName: fk_transfer_to_card
                     references: cards(id)
+                    deleteAction: CASCADE
               - column:
                   name: amount
                   type: DECIMAL(15,2)
@@ -167,6 +170,7 @@ databaseChangeLog:
                     nullable: false
                     foreignKeyName: fk_block_request_card
                     references: cards(id)
+                    deleteAction: CASCADE
               - column:
                   name: reason
                   type: VARCHAR(500)
@@ -185,5 +189,3 @@ databaseChangeLog:
               - column:
                   name: processed_at
                   type: TIMESTAMP
-                  constraints:
-                    nullable: false

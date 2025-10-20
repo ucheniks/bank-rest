@@ -2,7 +2,6 @@
   "openapi": "3.0.1",
   "info": {
     "title": "Bank Cards Management API",
-    "description": "REST API for managing bank cards and transfers",
     "version": "1.0"
   },
   "servers": [
@@ -27,7 +26,7 @@
           "404": {
             "description": "Not Found",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -37,7 +36,7 @@
           "409": {
             "description": "Conflict",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -47,7 +46,7 @@
           "401": {
             "description": "Unauthorized",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -57,7 +56,7 @@
           "403": {
             "description": "Forbidden",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -67,7 +66,7 @@
           "400": {
             "description": "Bad Request",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -77,7 +76,7 @@
           "500": {
             "description": "Internal Server Error",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -87,7 +86,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "type": "array",
                   "items": {
@@ -118,7 +117,7 @@
           "404": {
             "description": "Not Found",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -128,7 +127,7 @@
           "409": {
             "description": "Conflict",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -138,7 +137,7 @@
           "401": {
             "description": "Unauthorized",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -148,7 +147,7 @@
           "403": {
             "description": "Forbidden",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -158,7 +157,7 @@
           "400": {
             "description": "Bad Request",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -168,7 +167,7 @@
           "500": {
             "description": "Internal Server Error",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -178,7 +177,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/TransferResponseDto"
                 }
@@ -219,7 +218,7 @@
           "404": {
             "description": "Not Found",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -229,7 +228,7 @@
           "409": {
             "description": "Conflict",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -239,7 +238,7 @@
           "401": {
             "description": "Unauthorized",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -249,7 +248,7 @@
           "403": {
             "description": "Forbidden",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -259,7 +258,7 @@
           "400": {
             "description": "Bad Request",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -269,7 +268,7 @@
           "500": {
             "description": "Internal Server Error",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -279,7 +278,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/BlockRequestResponseDto"
                 }
@@ -294,7 +293,6 @@
         "tags": [
           "auth-controller"
         ],
-        "summary": "User authentication",
         "operationId": "login",
         "requestBody": {
           "content": {
@@ -310,7 +308,7 @@
           "404": {
             "description": "Not Found",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -320,7 +318,7 @@
           "409": {
             "description": "Conflict",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -330,7 +328,7 @@
           "401": {
             "description": "Unauthorized",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -340,7 +338,7 @@
           "403": {
             "description": "Forbidden",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -350,7 +348,7 @@
           "400": {
             "description": "Bad Request",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -360,7 +358,7 @@
           "500": {
             "description": "Internal Server Error",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -368,9 +366,9 @@
             }
           },
           "200": {
-            "description": "Successfully authenticated",
+            "description": "OK",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/AuthResponseDto"
                 }
@@ -390,7 +388,7 @@
           "404": {
             "description": "Not Found",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -400,7 +398,7 @@
           "409": {
             "description": "Conflict",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -410,7 +408,7 @@
           "401": {
             "description": "Unauthorized",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -420,7 +418,7 @@
           "403": {
             "description": "Forbidden",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -430,7 +428,7 @@
           "400": {
             "description": "Bad Request",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -440,7 +438,7 @@
           "500": {
             "description": "Internal Server Error",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -450,7 +448,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "type": "array",
                   "items": {
@@ -481,7 +479,7 @@
           "404": {
             "description": "Not Found",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -491,7 +489,7 @@
           "409": {
             "description": "Conflict",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -501,7 +499,7 @@
           "401": {
             "description": "Unauthorized",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -511,7 +509,7 @@
           "403": {
             "description": "Forbidden",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -521,7 +519,7 @@
           "400": {
             "description": "Bad Request",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -531,7 +529,7 @@
           "500": {
             "description": "Internal Server Error",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -541,7 +539,7 @@
           "201": {
             "description": "Created",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/UserResponseDto"
                 }
@@ -582,7 +580,7 @@
           "404": {
             "description": "Not Found",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -592,7 +590,7 @@
           "409": {
             "description": "Conflict",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -602,7 +600,7 @@
           "401": {
             "description": "Unauthorized",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -612,7 +610,7 @@
           "403": {
             "description": "Forbidden",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -622,7 +620,7 @@
           "400": {
             "description": "Bad Request",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -632,7 +630,7 @@
           "500": {
             "description": "Internal Server Error",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -642,7 +640,7 @@
           "201": {
             "description": "Created",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/CardResponseDto"
                 }
@@ -673,7 +671,7 @@
           "404": {
             "description": "Not Found",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -683,7 +681,7 @@
           "409": {
             "description": "Conflict",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -693,7 +691,7 @@
           "401": {
             "description": "Unauthorized",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -703,7 +701,7 @@
           "403": {
             "description": "Forbidden",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -713,7 +711,7 @@
           "400": {
             "description": "Bad Request",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -723,7 +721,7 @@
           "500": {
             "description": "Internal Server Error",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -733,7 +731,98 @@
           "200": {
             "description": "OK",
             "content": {
-              "application/json": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/CardResponseDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/cards/{cardId}/approve-block": {
+      "patch": {
+        "tags": [
+          "card-controller-admin"
+        ],
+        "operationId": "approveCardBlock",
+        "parameters": [
+          {
+            "name": "cardId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/CardResponseDto"
                 }
@@ -764,7 +853,7 @@
           "404": {
             "description": "Not Found",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -774,7 +863,7 @@
           "409": {
             "description": "Conflict",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -784,7 +873,7 @@
           "401": {
             "description": "Unauthorized",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -794,7 +883,7 @@
           "403": {
             "description": "Forbidden",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -804,7 +893,7 @@
           "400": {
             "description": "Bad Request",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -814,7 +903,7 @@
           "500": {
             "description": "Internal Server Error",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -824,7 +913,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/CardResponseDto"
                 }
@@ -841,6 +930,14 @@
         ],
         "operationId": "getUserCards",
         "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "page",
             "in": "query",
@@ -866,7 +963,7 @@
           "404": {
             "description": "Not Found",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -876,7 +973,7 @@
           "409": {
             "description": "Conflict",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -886,7 +983,7 @@
           "401": {
             "description": "Unauthorized",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -896,7 +993,7 @@
           "403": {
             "description": "Forbidden",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -906,7 +1003,7 @@
           "400": {
             "description": "Bad Request",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -916,7 +1013,7 @@
           "500": {
             "description": "Internal Server Error",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -926,7 +1023,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/PageCardResponseDto"
                 }
@@ -957,7 +1054,7 @@
           "404": {
             "description": "Not Found",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -967,7 +1064,7 @@
           "409": {
             "description": "Conflict",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -977,7 +1074,7 @@
           "401": {
             "description": "Unauthorized",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -987,7 +1084,7 @@
           "403": {
             "description": "Forbidden",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -997,7 +1094,7 @@
           "400": {
             "description": "Bad Request",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -1007,7 +1104,7 @@
           "500": {
             "description": "Internal Server Error",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -1017,9 +1114,100 @@
           "200": {
             "description": "OK",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/CardResponseDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/cards/{cardId}/balance": {
+      "get": {
+        "tags": [
+          "user-card-controller"
+        ],
+        "operationId": "getCardBalance",
+        "parameters": [
+          {
+            "name": "cardId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "number"
                 }
               }
             }
@@ -1048,7 +1236,7 @@
           "404": {
             "description": "Not Found",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -1058,7 +1246,7 @@
           "409": {
             "description": "Conflict",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -1068,7 +1256,7 @@
           "401": {
             "description": "Unauthorized",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -1078,7 +1266,7 @@
           "403": {
             "description": "Forbidden",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -1088,7 +1276,7 @@
           "400": {
             "description": "Bad Request",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -1098,7 +1286,7 @@
           "500": {
             "description": "Internal Server Error",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -1108,7 +1296,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/UserResponseDto"
                 }
@@ -1137,7 +1325,7 @@
           "404": {
             "description": "Not Found",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -1147,7 +1335,7 @@
           "409": {
             "description": "Conflict",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -1157,7 +1345,7 @@
           "401": {
             "description": "Unauthorized",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -1167,7 +1355,7 @@
           "403": {
             "description": "Forbidden",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -1177,7 +1365,7 @@
           "400": {
             "description": "Bad Request",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -1187,7 +1375,7 @@
           "500": {
             "description": "Internal Server Error",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -1196,6 +1384,108 @@
           },
           "204": {
             "description": "No Content"
+          }
+        }
+      }
+    },
+    "/admin/cards": {
+      "get": {
+        "tags": [
+          "card-controller-admin"
+        ],
+        "operationId": "getAllCards",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageCardResponseDto"
+                }
+              }
+            }
           }
         }
       }
@@ -1221,7 +1511,7 @@
           "404": {
             "description": "Not Found",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -1231,7 +1521,7 @@
           "409": {
             "description": "Conflict",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -1241,7 +1531,7 @@
           "401": {
             "description": "Unauthorized",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -1251,7 +1541,7 @@
           "403": {
             "description": "Forbidden",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -1261,7 +1551,7 @@
           "400": {
             "description": "Bad Request",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -1271,7 +1561,7 @@
           "500": {
             "description": "Internal Server Error",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -1281,7 +1571,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/CardResponseDto"
                 }
@@ -1310,7 +1600,7 @@
           "404": {
             "description": "Not Found",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -1320,7 +1610,7 @@
           "409": {
             "description": "Conflict",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -1330,7 +1620,7 @@
           "401": {
             "description": "Unauthorized",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -1340,7 +1630,7 @@
           "403": {
             "description": "Forbidden",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -1350,7 +1640,7 @@
           "400": {
             "description": "Bad Request",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -1360,7 +1650,7 @@
           "500": {
             "description": "Internal Server Error",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
@@ -1506,12 +1796,9 @@
         "type": "object",
         "properties": {
           "token": {
-            "type": "string",
-            "description": "JWT token for authenticated requests",
-            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+            "type": "string"
           }
-        },
-        "description": "Authentication response with JWT token"
+        }
       },
       "UserRequestDto": {
         "required": [

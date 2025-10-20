@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BlockRequestDto {
-    @NotBlank
+    @NotBlank(message = "Reason cannot be blank")
     private String reason;
 }

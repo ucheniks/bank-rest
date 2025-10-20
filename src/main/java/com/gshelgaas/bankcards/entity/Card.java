@@ -8,6 +8,9 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Builder
@@ -21,7 +24,7 @@ public class Card {
     private Long id;
 
     @Column(nullable = false, unique = true)
-    private String cardNumber; // будем шифровать
+    private String cardNumber;
 
     @Column(nullable = false)
     private String cardHolder;
@@ -41,7 +44,16 @@ public class Card {
     private User user;
 
     @Column(nullable = false)
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
+
+    @OneToMany(mappedBy = "fromCard", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Transfer> outgoingTransfers = new ArrayList<>();
+
+    @OneToMany(mappedBy = "toCard", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Transfer> incomingTransfers = new ArrayList<>();
+
+    @OneToMany(mappedBy = "card", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<BlockRequest> blockRequests = new ArrayList<>();
 
     public enum CardStatus {
         ACTIVE,

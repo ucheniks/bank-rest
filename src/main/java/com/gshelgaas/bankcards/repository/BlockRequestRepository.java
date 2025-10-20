@@ -8,7 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface BlockRequestRepository extends JpaRepository<BlockRequest, Long> {
-    List<BlockRequest> findByCardUserId(Long userId);
     Optional<BlockRequest> findByCardIdAndStatus(Long cardId, BlockRequest.BlockStatus status);
-    List<BlockRequest> findByStatus(BlockRequest.BlockStatus status);
 }

@@ -14,14 +14,14 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TransferRequestDto {
-    @NotNull
+    @NotNull(message = "From card ID cannot be null")
     private Long fromCardId;
 
-    @NotNull
+    @NotNull(message = "To card ID cannot be null")
     private Long toCardId;
 
-    @NotNull
-    @Positive
+    @NotNull(message = "Amount cannot be null")
+    @Positive(message = "Amount must be positive")
     private BigDecimal amount;
 
     private String description;

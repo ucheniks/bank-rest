@@ -17,17 +17,17 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CardRequestDto {
-    @NotBlank
+    @NotBlank(message = "Card number cannot be blank")
     private String cardNumber;
 
-    @NotBlank
+    @NotBlank(message = "Card holder cannot be blank")
     private String cardHolder;
 
-    @Future
-    @NotNull
+    @Future(message = "Expiry date must be in the future")
+    @NotNull(message = "Expiry date cannot be null")
     private LocalDate expiryDate;
 
-    @NotNull
-    @PositiveOrZero
+    @NotNull(message = "Balance cannot be null")
+    @PositiveOrZero(message = "Balance must be positive or zero")
     private BigDecimal balance;
 }

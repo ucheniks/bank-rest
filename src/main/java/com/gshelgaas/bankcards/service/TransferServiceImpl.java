@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -40,8 +41,11 @@ public class TransferServiceImpl implements TransferService {
             throw new ForbiddenException("Card does not belong to user");
         }
 
+        fromCard = refreshSingleCardStatus(fromCard);
+        toCard = refreshSingleCardStatus(toCard);
+
         if (fromCard.getStatus() != Card.CardStatus.ACTIVE || toCard.getStatus() != Card.CardStatus.ACTIVE) {
-            throw new ConflictException("Cards must be active for transfer");
+            throw new ConflictException("Both cards must be ACTIVE for transfer");
         }
 
         if (fromCard.getBalance().compareTo(transferRequest.getAmount()) < 0) {
@@ -88,5 +92,13 @@ public class TransferServiceImpl implements TransferService {
                 .status(transfer.getStatus().name())
                 .description(transfer.getDescription())
                 .build();
+    }
+
+    private Card refreshSingleCardStatus(Card card) {
+        if (card.getStatus() == Card.CardStatus.ACTIVE && card.getExpiryDate().isBefore(LocalDate.now())) {
+            card.setStatus(Card.CardStatus.EXPIRED);
+            return cardRepository.save(card);
+        }
+        return card;
     }
 }
