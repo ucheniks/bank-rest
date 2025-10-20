@@ -3,7 +3,7 @@ server:
 
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/bank_cards
+    url: jdbc:postgresql://postgres :5432/bank_cards
     username: bank_user
     password: bank_password
     driver-class-name: org.postgresql.Driver
@@ -18,14 +18,18 @@ spring:
     show-sql: true
 
   liquibase:
-    change-log: classpath:db/changelog/db.changelog-master.yaml
+    enabled: true
+    change-log: classpath:db/migration/db.changelog-master.yaml
 
-  jackson:
-    date-format: yyyy-MM-dd HH:mm:ss
-    time-zone: UTC
+jwt:
+  secret: mySuperSecretKeyForJWT1234567890
+  expiration: 86400000
+
+encryption:
+  secret: myDefaultEncryptionKey1234567890123456
 
 logging:
   level:
     com.gshelgaas.bankcards: DEBUG
-    org.springframework.security: DEBUG
+    org.springframework.security: INFO
     org.hibernate.SQL: DEBUG
