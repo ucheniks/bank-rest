@@ -17,12 +17,23 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Глобальный обработчик исключений для REST API.
+ * Перехватывает исключения со всех контроллеров и преобразует их в стандартизированные JSON ответы.
+ * Обеспечивает единообразную обработку ошибок во всем приложении.
+ *
+ * @author Георгий Шельгаас
+ */
 @RestControllerAdvice
 public class ErrorHandler {
 
     private static final DateTimeFormatter TIMESTAMP_FORMATTER =
             DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
+    /**
+     * Обрабатывает исключения NotFoundException.
+     * Возникает когда запрашиваемый ресурс не найден в системе.
+     */
     @ExceptionHandler({NotFoundException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ApiError handleNotFoundException(final NotFoundException e) {
@@ -34,6 +45,10 @@ public class ErrorHandler {
         );
     }
 
+    /**
+     * Обрабатывает исключения ConflictException.
+     * Возникает при нарушении бизнес-правил или конфликте данных.
+     */
     @ExceptionHandler({ConflictException.class})
     @ResponseStatus(HttpStatus.CONFLICT)
     public ApiError handleConflictException(final ConflictException e) {
@@ -45,6 +60,10 @@ public class ErrorHandler {
         );
     }
 
+    /**
+     * Обрабатывает исключения UnauthorizedException.
+     * Возникает когда пользователь не аутентифицирован.
+     */
     @ExceptionHandler({UnauthorizedException.class})
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ApiError handleUnauthorizedException(final UnauthorizedException e) {
@@ -56,6 +75,10 @@ public class ErrorHandler {
         );
     }
 
+    /**
+     * Обрабатывает исключения ForbiddenException.
+     * Возникает когда пользователь аутентифицирован, но не имеет необходимых прав.
+     */
     @ExceptionHandler({ForbiddenException.class})
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ApiError handleForbiddenException(final ForbiddenException e) {
@@ -67,6 +90,10 @@ public class ErrorHandler {
         );
     }
 
+    /**
+     * Обрабатывает исключения BadCredentialsException от Spring Security.
+     * Возникает при неверных учетных данных при аутентификации.
+     */
     @ExceptionHandler(BadCredentialsException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ApiError handleBadCredentialsException(final BadCredentialsException e) {
@@ -78,6 +105,10 @@ public class ErrorHandler {
         );
     }
 
+    /**
+     * Обрабатывает исключения AccessDeniedException от Spring Security.
+     * Возникает когда аутентифицированный пользователь пытается получить доступ к запрещенному ресурсу.
+     */
     @ExceptionHandler(AccessDeniedException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ApiError handleAccessDeniedException(final AccessDeniedException e) {
@@ -89,6 +120,10 @@ public class ErrorHandler {
         );
     }
 
+    /**
+     * Обрабатывает ошибки валидации @Valid аннотаций.
+     * Возникает при некорректных данных в DTO при валидации.
+     */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiError handleMethodArgumentNotValid(final MethodArgumentNotValidException e) {
@@ -104,6 +139,10 @@ public class ErrorHandler {
         );
     }
 
+    /**
+     * Обрабатывает отсутствующие обязательные параметры запроса.
+     * Возникает когда обязательный query parameter отсутствует в запросе.
+     */
     @ExceptionHandler(MissingServletRequestParameterException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiError handleMissingParams(MissingServletRequestParameterException e) {
@@ -115,6 +154,10 @@ public class ErrorHandler {
         );
     }
 
+    /**
+     * Обрабатывает отсутствующие обязательные заголовки запроса.
+     * Возникает когда обязательный header отсутствует в запросе.
+     */
     @ExceptionHandler(MissingRequestHeaderException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiError handleMissingHeader(final MissingRequestHeaderException e) {
@@ -126,6 +169,10 @@ public class ErrorHandler {
         );
     }
 
+    /**
+     * Обрабатывает некорректный JSON в теле запроса.
+     * Возникает при синтаксических ошибках в JSON или несоответствии типам данных.
+     */
     @ExceptionHandler(HttpMessageNotReadableException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiError handleHttpMessageNotReadable(final HttpMessageNotReadableException e) {
@@ -137,6 +184,10 @@ public class ErrorHandler {
         );
     }
 
+    /**
+     * Обрабатывает некорректные аргументы методов.
+     * Возникает при передаче недопустимых значений в параметры методов.
+     */
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiError handleIllegalArgument(final IllegalArgumentException e) {
@@ -148,6 +199,10 @@ public class ErrorHandler {
         );
     }
 
+    /**
+     * Обрабатывает все неперехваченные исключения.
+     * Является обработчиком для любых непредвиденных ошибок.
+     */
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ApiError handleErrors(final Throwable e) {
@@ -159,6 +214,9 @@ public class ErrorHandler {
         );
     }
 
+    /**
+     * Создает стандартизированный объект ApiError для ответа.
+     */
     private ApiError buildApiError(String message, String reason, HttpStatus status, List<String> errors) {
         return ApiError.builder()
                 .message(message)

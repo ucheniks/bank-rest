@@ -26,16 +26,28 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+/**
+ * Реализация сервиса для управления банковскими картами.
+ * Обрабатывает бизнес-логику создания, блокировки карт и переводов между картами.
+ *
+ * @author Георгий Шельгаас
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class CardServiceImpl implements CardService {
+
     private final CardRepository cardRepository;
     private final UserRepository userRepository;
     private final BlockRequestRepository blockRequestRepository;
     private final EncryptionUtil encryptionUtil;
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Реализация включает шифрование номера карты и валидацию срока действия.
+     */
     @Override
     @Transactional
     public CardResponseDto createCard(CardRequestDto cardRequestDto, Long userId) {
@@ -44,7 +56,8 @@ public class CardServiceImpl implements CardService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User not found with id: " + userId));
 
-        if (cardRepository.existsByCardNumber(cardRequestDto.getCardNumber())) {
+        String encryptedCardNumber = encryptionUtil.encrypt(cardRequestDto.getCardNumber());
+        if (cardRepository.existsByCardNumber(encryptedCardNumber)) {
             throw new ConflictException("Card with this number already exists");
         }
 
@@ -53,7 +66,7 @@ public class CardServiceImpl implements CardService {
         }
 
         Card card = Card.builder()
-                .cardNumber(encryptionUtil.encrypt(cardRequestDto.getCardNumber()))
+                .cardNumber(encryptedCardNumber)
                 .cardHolder(cardRequestDto.getCardHolder())
                 .expiryDate(cardRequestDto.getExpiryDate())
                 .status(Card.CardStatus.ACTIVE)
@@ -68,14 +81,24 @@ public class CardServiceImpl implements CardService {
         return mapToResponseDto(savedCard);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public CardResponseDto getCardById(Long cardId) {
         log.info("Getting card by id: {}", cardId);
+
         Card card = cardRepository.findById(cardId)
                 .orElseThrow(() -> new NotFoundException("Card not found with id: " + cardId));
+
         return mapToResponseDtoWithActualStatus(card);
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Для каждой карты автоматически рассчитывается актуальный статус.
+     */
     @Override
     public Page<CardResponseDto> getUserCards(Long userId, String status, Pageable pageable) {
         log.info("Getting cards for user: {} with status filter: {}", userId, status);
@@ -97,24 +120,16 @@ public class CardServiceImpl implements CardService {
                 .map(this::mapToResponseDtoWithActualStatus);
     }
 
-    @Override
-    public BigDecimal getCardBalance(Long cardId, Long userId) {
-        log.info("Getting balance for card: {}, user: {}", cardId, userId);
-
-        Card card = cardRepository.findById(cardId)
-                .orElseThrow(() -> new NotFoundException("Card not found"));
-
-        if (!card.getUser().getId().equals(userId)) {
-            throw new ForbiddenException("Card does not belong to user");
-        }
-
-        return card.getBalance();
-    }
-
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Перед блокировкой проверяет актуальный статус карты.
+     */
     @Override
     @Transactional
     public CardResponseDto blockCard(Long cardId) {
         log.info("Blocking card: {}", cardId);
+
         Card card = cardRepository.findById(cardId)
                 .orElseThrow(() -> new NotFoundException("Card not found with id: " + cardId));
 
@@ -126,10 +141,14 @@ public class CardServiceImpl implements CardService {
         return mapToResponseDto(updatedCard);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @Transactional
     public CardResponseDto activateCard(Long cardId) {
         log.info("Activating card: {}", cardId);
+
         Card card = cardRepository.findById(cardId)
                 .orElseThrow(() -> new NotFoundException("Card not found with id: " + cardId));
 
@@ -141,20 +160,30 @@ public class CardServiceImpl implements CardService {
         return mapToResponseDto(updatedCard);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @Transactional
     public void deleteCard(Long cardId) {
         log.info("Deleting card: {}", cardId);
+
         if (!cardRepository.existsById(cardId)) {
             throw new NotFoundException("Card not found with id: " + cardId);
         }
         cardRepository.deleteById(cardId);
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Реализация включает проверку прав доступа и предотвращение дублирующих запросов.
+     */
     @Override
     @Transactional
     public BlockRequestResponseDto requestCardBlock(Long cardId, Long userId, BlockRequestDto blockRequestDto) {
         log.info("Requesting block for card: {} by user: {}", cardId, userId);
+
         checkCardOwnership(cardId, userId);
 
         Card card = cardRepository.findById(cardId)
@@ -183,10 +212,16 @@ public class CardServiceImpl implements CardService {
         return mapToBlockRequestResponseDto(savedRequest);
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Реализация обновляет статус карты и отмечает запрос как обработанный.
+     */
     @Override
     @Transactional
     public CardResponseDto approveCardBlock(Long cardId) {
         log.info("Approving block for card: {}", cardId);
+
         Card card = cardRepository.findById(cardId)
                 .orElseThrow(() -> new NotFoundException("Card not found"));
 
@@ -206,14 +241,37 @@ public class CardServiceImpl implements CardService {
         return mapToResponseDto(card);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    @Transactional
     public Page<CardResponseDto> getAllCards(Pageable pageable) {
         log.info("Getting all cards with pagination");
+
         return cardRepository.findAll(pageable)
                 .map(this::mapToResponseDtoWithActualStatus);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public BigDecimal getCardBalance(Long cardId, Long userId) {
+        log.info("Getting balance for card: {}, user: {}", cardId, userId);
+
+        Card card = cardRepository.findById(cardId)
+                .orElseThrow(() -> new NotFoundException("Card not found"));
+
+        if (!card.getUser().getId().equals(userId)) {
+            throw new ForbiddenException("Card does not belong to user");
+        }
+
+        return card.getBalance();
+    }
+
+    /**
+     * Проверяет, что карта принадлежит указанному пользователю.
+     */
     private void checkCardOwnership(Long cardId, Long userId) {
         Card card = cardRepository.findById(cardId)
                 .orElseThrow(() -> new NotFoundException("Card not found"));
@@ -223,6 +281,9 @@ public class CardServiceImpl implements CardService {
         }
     }
 
+    /**
+     * Преобразует сущность Card в DTO с расчетом актуального статуса.
+     */
     private CardResponseDto mapToResponseDtoWithActualStatus(Card card) {
         Card.CardStatus actualStatus = calculateActualStatus(card);
 
@@ -237,6 +298,9 @@ public class CardServiceImpl implements CardService {
                 .build();
     }
 
+    /**
+     * Преобразует сущность Card в DTO без изменения статуса.
+     */
     private CardResponseDto mapToResponseDto(Card card) {
         return CardResponseDto.builder()
                 .id(card.getId())
@@ -249,6 +313,9 @@ public class CardServiceImpl implements CardService {
                 .build();
     }
 
+    /**
+     * Преобразует сущность BlockRequest в DTO.
+     */
     private BlockRequestResponseDto mapToBlockRequestResponseDto(BlockRequest blockRequest) {
         return BlockRequestResponseDto.builder()
                 .id(blockRequest.getId())
@@ -259,6 +326,9 @@ public class CardServiceImpl implements CardService {
                 .build();
     }
 
+    /**
+     * Рассчитывает актуальный статус карты на основе даты истечения срока.
+     */
     private Card.CardStatus calculateActualStatus(Card card) {
         if (card.getStatus() == Card.CardStatus.ACTIVE &&
                 card.getExpiryDate().isBefore(LocalDate.now())) {
@@ -267,6 +337,9 @@ public class CardServiceImpl implements CardService {
         return card.getStatus();
     }
 
+    /**
+     * Маскирует номер карты, оставляя видимыми только последние 4 цифры.
+     */
     private String maskCardNumber(String cardNumber) {
         if (cardNumber == null || cardNumber.length() < 4) {
             return cardNumber;
@@ -281,6 +354,9 @@ public class CardServiceImpl implements CardService {
         }
     }
 
+    /**
+     * Проверяет, что карта не истекла для выполнения операции.
+     */
     private void validateCardNotExpired(Card card, String operation) {
         Card.CardStatus actualStatus = calculateActualStatus(card);
 

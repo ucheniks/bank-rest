@@ -11,13 +11,26 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * Контроллер для аутентификации пользователей.
+ * Предоставляет endpoint'ы для входа в систему и получения JWT токенов.
+ *
+ * @author Георгий Шельгаас
+ */
 @Slf4j
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AuthController {
+
     private final AuthService authService;
 
+    /**
+     * Выполняет аутентификацию пользователя и возвращает JWT токен.
+     *
+     * @param authRequest данные для входа (email и пароль)
+     * @return JWT токен для доступа к защищенным endpoint'ам
+     */
     @PostMapping("/login")
     public AuthResponseDto login(@Valid @RequestBody AuthRequestDto authRequest) {
         log.info("POST /auth/login - login attempt for email: {}", authRequest.getEmail());

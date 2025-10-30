@@ -16,19 +16,39 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
+/**
+ * Конфигурация безопасности Spring Security.
+ * Настраивает аутентификацию, авторизацию, JWT фильтры и CORS.
+ *
+ * @author Георгий Шельгаас
+ */
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
+
     private final JwtAuthFilter jwtAuthFilter;
 
+    /**
+     * Настраивает цепочку фильтров безопасности HTTP запросов.
+     * Включает CORS, JWT аутентификацию и ролевой доступ.
+     *
+     * @param http объект для настройки безопасности
+     * @return сконфигурированная цепочка фильтров
+     * @throws Exception если конфигурация не удалась
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
@@ -55,6 +75,40 @@ public class SecurityConfig {
         return http.build();
     }
 
+    /**
+     * Настраивает CORS для разрешения запросов с других доменов.
+     * Разрешает все origins, методы и заголовки для разработки.
+     * В продакшене следует ограничить origins конкретными доменами.
+     *
+     * @return источник конфигурации CORS
+     */
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+
+        configuration.setAllowedOriginPatterns(List.of("*"));
+
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+
+        configuration.setAllowedHeaders(List.of("*"));
+
+        configuration.setAllowCredentials(false);
+
+        configuration.setMaxAge(3600L);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+
+        return source;
+    }
+
+    /**
+     * Создает JSON ответ для ошибок аутентификации и авторизации.
+     *
+     * @param message сообщение об ошибке
+     * @param status  HTTP статус
+     * @return JSON строка с информацией об ошибке
+     */
     private String createErrorJson(String message, HttpStatus status) {
         return String.format(
                 "{\"message\":\"%s\",\"reason\":\"%s\",\"status\":\"%s\",\"timestamp\":\"%s\"}",
@@ -65,11 +119,23 @@ public class SecurityConfig {
         );
     }
 
+    /**
+     * Создает кодировщик паролей BCrypt.
+     *
+     * @return BCryptPasswordEncoder для хеширования паролей
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * Создает менеджер аутентификации Spring Security.
+     *
+     * @param config конфигурация аутентификации
+     * @return AuthenticationManager для проверки учетных данных
+     * @throws Exception если создание менеджера не удалось
+     */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();

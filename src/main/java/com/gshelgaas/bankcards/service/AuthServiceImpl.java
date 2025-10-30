@@ -11,14 +11,29 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
+/**
+ * Реализация сервиса для аутентификации пользователей.
+ * Обрабатывает процесс входа в систему и генерацию JWT токенов.
+ *
+ * @author Георгий Шельгаас
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
+
     private final AuthenticationManager authenticationManager;
     private final UserDetailsService userDetailsService;
     private final JwtUtil jwtUtil;
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Реализация включает:
+     * - Аутентификацию через Spring Security AuthenticationManager
+     * - Загрузку данных пользователя через UserDetailsService
+     * - Генерацию JWT токена с email пользователя
+     */
     @Override
     public AuthResponseDto login(AuthRequestDto authRequest) {
         log.info("Login attempt for email: {}", authRequest.getEmail());
@@ -31,6 +46,7 @@ public class AuthServiceImpl implements AuthService {
         String token = jwtUtil.generateToken(authRequest.getEmail());
 
         log.info("Login successful for email: {}", authRequest.getEmail());
+
         return AuthResponseDto.builder()
                 .token(token)
                 .build();

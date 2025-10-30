@@ -18,14 +18,30 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * Реализация сервиса для управления переводами между банковскими картами.
+ * Обрабатывает бизнес-логику переводов и валидацию операций.
+ *
+ * @author Георгий Шельгаас
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class TransferServiceImpl implements TransferService {
+
     private final TransferRepository transferRepository;
     private final CardRepository cardRepository;
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Реализация включает:
+     * - Проверку прав доступа к карте отправителя
+     * - Валидацию статусов карт
+     * - Проверку достаточности средств
+     * - Атомарное обновление балансов
+     */
     @Override
     @Transactional
     public TransferResponseDto transferBetweenCards(TransferRequestDto transferRequest, Long userId) {
@@ -41,11 +57,8 @@ public class TransferServiceImpl implements TransferService {
             throw new ForbiddenException("Card does not belong to user");
         }
 
-        fromCard = refreshSingleCardStatus(fromCard);
-        toCard = refreshSingleCardStatus(toCard);
-
         if (fromCard.getStatus() != Card.CardStatus.ACTIVE || toCard.getStatus() != Card.CardStatus.ACTIVE) {
-            throw new ConflictException("Both cards must be ACTIVE for transfer");
+            throw new ConflictException("Cards must be active for transfer");
         }
 
         if (fromCard.getBalance().compareTo(transferRequest.getAmount()) < 0) {
@@ -73,15 +86,22 @@ public class TransferServiceImpl implements TransferService {
         return mapToResponseDto(savedTransfer);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<TransferResponseDto> getUserTransfers(Long userId) {
         log.info("Getting transfers for user: {}", userId);
+
         List<Transfer> transfers = transferRepository.findByFromCardUserIdOrToCardUserId(userId, userId);
         return transfers.stream()
                 .map(this::mapToResponseDto)
                 .toList();
     }
 
+    /**
+     * Преобразует сущность Transfer в DTO для ответа.
+     */
     private TransferResponseDto mapToResponseDto(Transfer transfer) {
         return TransferResponseDto.builder()
                 .id(transfer.getId())
@@ -92,13 +112,5 @@ public class TransferServiceImpl implements TransferService {
                 .status(transfer.getStatus().name())
                 .description(transfer.getDescription())
                 .build();
-    }
-
-    private Card refreshSingleCardStatus(Card card) {
-        if (card.getStatus() == Card.CardStatus.ACTIVE && card.getExpiryDate().isBefore(LocalDate.now())) {
-            card.setStatus(Card.CardStatus.EXPIRED);
-            return cardRepository.save(card);
-        }
-        return card;
     }
 }

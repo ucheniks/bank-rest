@@ -2,6 +2,11 @@ databaseChangeLog:
   - changeSet:
       id: 001-create-users-table
       author: gshelgaas
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - tableExists:
+                tableName: users
       changes:
         - createTable:
             tableName: users
@@ -48,6 +53,11 @@ databaseChangeLog:
   - changeSet:
       id: 002-create-cards-table
       author: gshelgaas
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - tableExists:
+                tableName: cards
       changes:
         - createTable:
             tableName: cards
@@ -93,7 +103,7 @@ databaseChangeLog:
                     nullable: false
                     foreignKeyName: fk_card_user
                     references: users(id)
-                    deleteAction: CASCADE  
+                    deleteAction: CASCADE
               - column:
                   name: created_at
                   type: TIMESTAMP
@@ -103,6 +113,11 @@ databaseChangeLog:
   - changeSet:
       id: 003-create-transfers-table
       author: gshelgaas
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - tableExists:
+                tableName: transfers
       changes:
         - createTable:
             tableName: transfers
@@ -152,6 +167,11 @@ databaseChangeLog:
   - changeSet:
       id: 004-create-block-requests-table
       author: gshelgaas
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - tableExists:
+                tableName: block_requests
       changes:
         - createTable:
             tableName: block_requests
